@@ -38,6 +38,7 @@ class DataCenterEnv(gym.Env):
         action = float(np.clip(action, -1, 1))
 
         # (A) If shortfall > max_possible_buy => forcibly buy extra NOW
+        
         if shortfall > max_possible_buy:
             needed_now = shortfall - max_possible_buy
             forced_fraction = min(1.0, needed_now / self.max_power_rate)
@@ -46,6 +47,7 @@ class DataCenterEnv(gym.Env):
                 action = forced_fraction
 
         # (B) Disallow selling if it would make shortfall unfixable
+
         if action < 0:
             # Proposed sell MWh
             sell_mwh = -action * self.max_power_rate
