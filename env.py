@@ -2,6 +2,8 @@ import gym
 from gym import spaces
 import numpy as np
 import pandas as pd
+import gym
+from gym import spaces
 
 
 class DataCenterEnv(gym.Env):
@@ -13,6 +15,9 @@ class DataCenterEnv(gym.Env):
         self.timestamps = self.test_data['PRICES']
         self.start_date = self.test_data['PRICES'].iloc[0]
         self.start_date_day = self.start_date.day_name()
+        self.storage_values = np.arange(0, 201, 10)
+        self.observation_space = spaces.Discrete(len(self.storage_values))
+        self.action_space = spaces.Discrete(3)
 
         self.daily_energy_demand = 120  # MWh
         self.max_power_rate = 10  # MW
@@ -40,7 +45,7 @@ class DataCenterEnv(gym.Env):
         action = float(np.clip(action, -1, 1))
 
         # (A) If shortfall > max_possible_buy => forcibly buy extra NOW
-        if shortfall > max_possible_buy:
+        if shortfall >= max_possible_buy:
             needed_now = shortfall - max_possible_buy
             forced_fraction = min(1.0, needed_now / self.max_power_rate)
             # If user action is smaller, override:
