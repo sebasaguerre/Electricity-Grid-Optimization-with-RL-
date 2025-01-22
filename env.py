@@ -105,3 +105,9 @@ class DataCenterEnv(gym.Env):
         price = self.price_values[self.day - 1][self.hour - 1]
         self.state = np.array([self.storage_level, price, self.hour, self.day])
         return self.state
+
+    def reset(self):
+        self.hour = 1
+        self.day = 1
+        self.storage_level = 0
+        return self.observation()
