@@ -103,6 +103,11 @@ class DataCenterEnv(gym.Env):
             carryover = min(surplus, 50.0)
             self.storage_level = 0.0 + carryover  # reset day, keep carryover
 
+        # If the ther year is over reset (day=365)
+        if self.day == 366:
+            self.day = 1
+            self.hour = 1
+
         # Terminate if out of data
         terminated = (self.day >= len(self.price_values))
 
