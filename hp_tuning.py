@@ -12,9 +12,11 @@ from train_q_learning_gpu import *
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"hp tuning Using device: {device}")
 
-
-# ------------------- Elman torch -------------------
-pbounds = {"episodes" : (5000, 12000), "alpha" : (0.01, 0.15), "gamma": (0.99, 0.999), "start_epsilon": (0.5, 1.0), "end_epsilon": (0.01, 0.1)}
+gamma = 0.95 # discount factor should be lower
+start_epsilon = 0.9
+end_epsilon = 0.05
+pbounds = {"episodes" : (5000, 12000), "alpha" : (0.01, 0.15), "end_epsilon": (0.01, 0.1)}
+# pbounds = {"episodes" : (5000, 12000), "alpha" : (0.01, 0.15), "gamma": (0.99, 0.999), "start_epsilon": (0.5, 1.0), "end_epsilon": (0.01, 0.1)}
 def qlearn_wrapper(alpha, gamma, episodes, start_epsilon, end_epsilon):
     episodes = int(round(episodes))
     total_rwd, ep_rwd = main_train_qlearn(alpha, gamma, episodes, device, start_epsilon, end_epsilon)
@@ -41,7 +43,7 @@ optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
 # initial search 
 optimizer.maximize(
     init_points = 5, # number of random explorations before bayes_opt
-    n_iter = 15, # number of bayes_opt iterations
+    n_iter = 10, # number of bayes_opt iterations
 )
 
 # print out the data from the initial run to check if bounds need update 

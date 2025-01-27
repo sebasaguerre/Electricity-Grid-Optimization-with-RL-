@@ -54,7 +54,7 @@ def main_train_qlearn(alpha, gamma, episodes, device, start_epsilon, end_epsilon
     Q_shape = (22, 15, 24, max_days, 3)
 
     # Initialize Q-table on the GPU
-    Q = torch.zeros(Q_shape, dtype=torch.float32, device=device)
+    Q = torch.zeros(Q_shape, dtype=torch.float16, device=device)
 
 
     # History for tracking performance
@@ -66,7 +66,13 @@ def main_train_qlearn(alpha, gamma, episodes, device, start_epsilon, end_epsilon
         state = env.reset()
         s_idx, p_idx, h_idx, d_idx = get_state_indices(*state)
 
+        start_epsilon = 0.9
+        end_epsilon = 0.05
+        # at 100 -> 0.883
+        # at 4000 -> 0.22
+
         epsilon = start_epsilon + ep / episodes * (end_epsilon - start_epsilon)
+        # epsilon = start_epsilon - (start_epsilon-end_epsilon) * ep/episodes
         done = False
         total_reward = 0
 
@@ -113,3 +119,16 @@ def main_train_qlearn(alpha, gamma, episodes, device, start_epsilon, end_epsilon
 
 if __name__ == "__main__":
     main()
+
+
+# # Plot the rewards over time
+# plt.figure(figsize=(10, 6))
+# plt.plot(rewards, label="Q table Reward over episodes", color="blue", linewidth=2)
+# plt.plot(test_random_reward, label="Random Reward over episodes", color="green", linewidth=2)
+# plt.title(f"Reward over episodes", fontsize=16)
+# plt.xlabel("Steps", fontsize=12)
+# plt.ylabel("Reward", fontsize=12)
+# plt.grid(alpha=0.3)
+# plt.legend()
+# plt.tight_layout()
+# plt.show()

@@ -77,12 +77,18 @@ class DataCenterEnv(gym.Env):
             cost = buy_amount * price
             self.storage_level += buy_amount
             reward = -cost
+            # print(f"Buying {buy_amount} MWh at ${price:.2f}/MWh")
+            # print(f"Storage level: {self.storage_level} MWh")
+            # print(f"Cost: ${cost:.2f}") 
         else:
             # Selling
             sell_amount = min(-energy_transacted, self.storage_level)
             revenue = sell_amount * price * 0.8
             self.storage_level -= sell_amount
             reward = revenue
+            # print(f"Selling {sell_amount} MWh at ${price:.2f}/MWh")
+            # print(f"Storage level: {self.storage_level} MWh")
+            # print(f"Revenue: ${revenue:.2f}")
 
         # Next hour
         self.hour += 1
